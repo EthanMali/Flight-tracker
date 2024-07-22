@@ -8,41 +8,199 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="style.css"> <!-- Link to the separate CSS file -->
     <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+        .details-panel-content {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            margin: 0 5px; /* Adjusted margin for closer positioning */
+            vertical-align: middle;
+        }
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #007bff; /* Default color for icons */
+            font-size: 24px;
+            margin: 0; /* Ensure there's no margin */
+        }
+        .icon-buttons {
+            display: flex;
+            align-items: center;
+        }
+        .icon-buttons .icon-button + .icon-button {
+            margin-left: 5px; /* Add a small margin between buttons if needed */
+        }
+        .info-button i {
+            color: #007bff; /* Color for info icon */
+        }
+        .delete-button i {
+            color: #e74c3c; /* Red color for trash icon */
+        }
+        #flight-form {
+            margin-bottom: 20px;
+        }
+        .map-container {
+            margin-bottom: 20px;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+        #flight-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #flight-list li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .info-button, .delete-button {
+            margin-left: 0px;
+        }
+        .details-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .details-panel.show {
+            display: flex;
+        }
+        .details-panel-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            max-width: 90%;
+        }
+        .details-panel-content label {
+            display: block;
+            margin-top: 10px;
+        }
+        .details-panel-content input, .details-panel-content textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .details-panel-content textarea {
+            height: 100px;
+        }
+        .details-panel-content button {
+            margin-top: 10px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            max-width: 90%;
+            text-align: center;
+        }
+        .modal-content img.airplane {
+            width: 100px;
+            height: auto;
+        }
+        .modal-content button {
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
+
     <h1>Flight Tracker</h1>
     <div id="flight-form">
-        <img src="takeoff.svg" class="icon">
+        <button class="icon-button" id="departure-icon"><i class="fas fa-plane-departure"></i></button>
         <input type="text" id="departure-input" placeholder="Enter departure airport">        
-        <img src="landing.svg   " class="icon">
+        <button class="icon-button" id="arrival-icon"><i class="fas fa-plane-arrival"></i></button>
         <input type="text" id="arrival-input" placeholder="Enter arrival airport">   
+        <input type="text" id="flight-number-input" placeholder="Enter flight number (Optional)">
         <button id="add-flight-button">Add Flight</button>
-        <button id="reset-flights-button">Reset All Flights</button>
+        <button id="reset-flights-button">Delete All Flights</button>
     </div>
 
     <div class="map-container">
         <div id="map"></div>
     </div>
 
-    <div id="flight-list">
-        <h2>Past Flights:</h2>
-        <ul id="flights">
-            <!-- List of flights will be displayed here -->
-        </ul>
-    </div>
+    <section>
+        <div id="flight-list">
+            <h2 class="flight-list-container">Past Flights:</h2>
+            <ul id="flights">
+                <!-- List of flights will be displayed here -->
+            </ul>
+        </div>
+    </section>
+    
+    <!-- Details Panel HTML -->
+    <div id="details-panel" class="details-panel">
+        <div class="details-panel-content">
+            <span class="close">&times;</span>
+            <h2>Flight Details</h2>
+            <label for="flight-number">Flight Number:</label>
+            <input type="text" id="flight-number">
 
-    <footer>
-        <p class="footer-content">This website is not affiliated with Southwest Virtual Airlines in any way</p>
-    </footer>
+            <label for="details">Details:</label>
+            <textarea id="details"></textarea>
+
+            <input type="hidden" id="flight-index">
+
+            <button onclick="hideDetailsPanel()">Close</button>
+        </div>
+    </div>
 
     <!-- Modal HTML -->
     <div id="reset-modal" class="modal">
         <div class="modal-content">
             <img src="popup-animation.svg" class="airplane" alt="Airplane">
             <span class="close">&times;</span>
-            <h2>Confirm Reset</h2>
+            <h2>Confirm Delete</h2>
             <p>Are you sure you want to delete all your archived flights?</p>
-            <button id="confirm-reset">Yes, Reset</button>
+            <button id="confirm-reset">Yes, Delete All</button>
             <button id="cancel-reset">Cancel</button>
         </div>
     </div>
@@ -54,178 +212,202 @@
         function toUpperCase(str) {
             return str.toUpperCase();
         }
-    
+
         const map = L.map('map').setView([39.8283, -98.5795], 4); // Centered on the US
-    
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-    
+
         let markers = [];
         let flights = [];
         const apiKey = '7a33fc0eb49e4a8d967a17d0234ae41b'; // Replace with your OpenCage API key
-    
+
         function loadFlights() {
             const savedFlights = JSON.parse(localStorage.getItem('flights')) || [];
             savedFlights.forEach((flight, index) => {
                 if (flight && flight.departure && flight.arrival) {
                     const departureLatLng = [flight.departure.lat, flight.departure.lng];
                     const arrivalLatLng = [flight.arrival.lat, flight.arrival.lng];
-    
+
                     const departureMarker = L.marker(departureLatLng).addTo(map);
                     const arrivalMarker = L.marker(arrivalLatLng).addTo(map);
-    
+
                     const flightLine = L.polyline([departureLatLng, arrivalLatLng], { color: '#007bff', weight: 3, opacity: .5 }).addTo(map);
-    
+
                     const flightList = document.getElementById('flights');
                     const listItem = document.createElement('li');
                     listItem.innerHTML = `
-                        ${toUpperCase(flight.departure.place)} - ${toUpperCase(flight.arrival.place)}
-                        <button class="delete-button" onclick="deleteFlight(${index})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    `;
-                    flightList.appendChild(listItem);
-                    
-                    markers.push({ marker: [departureMarker, arrivalMarker], line: flightLine });
-                    flights.push(flight); // Maintain reference to flight data
-                }
-            });
-    
-            map.setView([39.8283, -98.5795], 4); // Reset view to the US
-        }
-    
-        function saveFlights() {
-            const flightData = flights.map(flight => {
-                if (flight && flight.line) {
-                    const latLngs = flight.line.getLatLngs();
-                    return {
-                        departure: { lat: latLngs[0].lat, lng: latLngs[0].lng, place: flight.departurePlace },
-                        arrival: { lat: latLngs[1].lat, lng: latLngs[1].lng, place: flight.arrivalPlace }
-                    };
-                }
-            }).filter(Boolean); // Filter out undefined results
-            localStorage.setItem('flights', JSON.stringify(flightData));
-        }
-    
-        function addFlight() {
-            const departureInput = document.getElementById('departure-input').value;
-            const arrivalInput = document.getElementById('arrival-input').value;
-            const departure = toUpperCase(departureInput);
-            const arrival = toUpperCase(arrivalInput);
-    
-            if (departure && arrival) {
-                Promise.all([
-                    fetch(`https://api.opencagedata.com/geocode/v1/json?q=${departure}&key=${apiKey}`).then(response => response.json()),
-                    fetch(`https://api.opencagedata.com/geocode/v1/json?q=${arrival}&key=${apiKey}`).then(response => response.json())
-                ]).then(results => {
-                    const [departureData, arrivalData] = results;
-                    if (departureData.results.length > 0 && arrivalData.results.length > 0) {
-                        const departureLocation = departureData.results[0].geometry;
-                        const arrivalLocation = arrivalData.results[0].geometry;
-                        const departureLatLng = [departureLocation.lat, departureLocation.lng];
-                        const arrivalLatLng = [arrivalLocation.lat, arrivalLocation.lng];
-    
-                        const departureMarker = L.marker(departureLatLng).addTo(map);
-                        const arrivalMarker = L.marker(arrivalLatLng).addTo(map);
-                        markers.push({ marker: [departureMarker, arrivalMarker] });
-    
-                        const flightLine = L.polyline([departureLatLng, arrivalLatLng], { color: '#007bff', weight: 3, opacity: .5 }).addTo(map);
-                        flights.push({ line: flightLine, departurePlace: departure, arrivalPlace: arrival });
-                        flightLine.departurePlace = departure; // Store additional data
-                        flightLine.arrivalPlace = arrival; // Store additional data
-    
-                        const flightList = document.getElementById('flights');
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `
-                            ${departure} - ${arrival}
-                            <button class="delete-button" onclick="deleteFlight(${flights.length - 1})">
+                        ${flight.flightNumber ? `<strong>${toUpperCase(flight.flightNumber)}</strong> ` : ''}
+                        ${toUpperCase(flight.departure.place)} to ${toUpperCase(flight.arrival.place)}
+                        <div class="icon-buttons">
+                            <button class="info-button icon-button" onclick="showDetailsPanel(${index})">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                            <button class="delete-button icon-button" onclick="deleteFlight(${index})">
                                 <i class="fas fa-trash"></i>
                             </button>
-                        `;
-                        flightList.appendChild(listItem);
-    
-                        saveFlights(); // Save flights to localStorage
-    
-                        // Clear the input fields
-                        document.getElementById('departure-input').value = '';
-                        document.getElementById('arrival-input').value = '';
-                    } else {
-                        alert('One or both airports not found');
-                    }
-                }).catch(err => {
-                    alert('Geocode was not successful for the following reason: ' + err);
-                });
-            }
-        }
-    
-        function deleteFlight(index) {
-            if (flights[index]) {
-                if (flights[index].line) {
-                    flights[index].line.remove();
+                        </div>
+                    `;
+                    flightList.appendChild(listItem);
+
+                    markers.push({ departure: departureMarker, arrival: arrivalMarker, line: flightLine });
+                    flights.push(flight);
                 }
-                markers[index].marker.forEach(marker => marker.remove());
-                flights.splice(index, 1);
-                markers.splice(index, 1);
-                saveFlights();
-                updateFlightList();
-            } else {
-                console.log('Flight not found at index:', index);
-            }
+            });
         }
-    
+
+        function addFlight(departure, arrival, flightNumber) {
+            const flight = { departure, arrival, flightNumber };
+
+            flights.push(flight);
+            localStorage.setItem('flights', JSON.stringify(flights));
+
+            const departureLatLng = [departure.lat, departure.lng];
+            const arrivalLatLng = [arrival.lat, arrival.lng];
+
+            const departureMarker = L.marker(departureLatLng).addTo(map);
+            const arrivalMarker = L.marker(arrivalLatLng).addTo(map);
+
+            const flightLine = L.polyline([departureLatLng, arrivalLatLng], { color: '#007bff', weight: 3, opacity: .5 }).addTo(map);
+
+            const flightList = document.getElementById('flights');
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+                ${flightNumber ? `<strong>${toUpperCase(flightNumber)}</strong> ` : ''}
+                ${toUpperCase(departure.place)} to ${toUpperCase(arrival.place)}
+                <div class="icon-buttons">
+                    <button class="info-button icon-button" onclick="showDetailsPanel(${flights.length - 1})">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                    <button class="delete-button icon-button" onclick="deleteFlight(${flights.length - 1})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            flightList.appendChild(listItem);
+
+            markers.push({ departure: departureMarker, arrival: arrivalMarker, line: flightLine });
+        }
+
+        function showDetailsPanel(index) {
+            const flight = flights[index];
+            document.getElementById('flight-number').value = flight.flightNumber || '';
+            document.getElementById('details').value = flight.details || '';
+            document.getElementById('flight-index').value = index;
+            document.getElementById('details-panel').classList.add('show');
+        }
+
+        function hideDetailsPanel() {
+            document.getElementById('details-panel').classList.remove('show');
+        }
+
+        function saveFlightDetails() {
+            const index = document.getElementById('flight-index').value;
+            const flight = flights[index];
+            flight.flightNumber = document.getElementById('flight-number').value;
+            flight.details = document.getElementById('details').value;
+            localStorage.setItem('flights', JSON.stringify(flights));
+            hideDetailsPanel();
+            updateFlightList();
+        }
+
+        function deleteFlight(index) {
+            flights.splice(index, 1);
+            localStorage.setItem('flights', JSON.stringify(flights));
+            updateFlightList();
+        }
+
+        function deleteAllFlights() {
+            flights = [];
+            localStorage.removeItem('flights');
+            updateFlightList();
+            markers.forEach(marker => {
+                marker.departure.remove();
+                marker.arrival.remove();
+                marker.line.remove();
+            });
+            markers = [];
+        }
+
         function updateFlightList() {
             const flightList = document.getElementById('flights');
             flightList.innerHTML = '';
             flights.forEach((flight, index) => {
                 const listItem = document.createElement('li');
                 listItem.innerHTML = `
-                    ${toUpperCase(flight.departurePlace)} - ${toUpperCase(flight.arrivalPlace)}
-                    <button class="delete-button" onclick="deleteFlight(${index})">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    ${flight.flightNumber ? `<strong>${toUpperCase(flight.flightNumber)}</strong> ` : ''}
+                    ${toUpperCase(flight.departure.place)} to ${toUpperCase(flight.arrival.place)}
+                    <div class="icon-buttons">
+                        <button class="info-button icon-button" onclick="showDetailsPanel(${index})">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                        <button class="delete-button icon-button" onclick="deleteFlight(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 `;
                 flightList.appendChild(listItem);
             });
         }
-    
-        function resetFlights() {
-            const modal = document.getElementById('reset-modal');
-            const closeButton = document.querySelector('.modal .close');
-            const confirmButton = document.getElementById('confirm-reset');
-            const cancelButton = document.getElementById('cancel-reset');
-    
-            modal.classList.add('show'); // Show modal with animation
-    
-            closeButton.onclick = function() {
-                modal.classList.remove('show'); // Hide modal with animation
-                setTimeout(() => modal.style.display = 'none', 300); // Ensure modal is hidden after animation
-            };
-    
-            cancelButton.onclick = function() {
-                modal.classList.remove('show'); // Hide modal with animation
-                setTimeout(() => modal.style.display = 'none', 300); // Ensure modal is hidden after animation
-            };
-    
-            confirmButton.onclick = function() {
-                markers.forEach(item => {
-                    item.marker.forEach(marker => marker.remove());
-                    item.line && item.line.remove(); // Check if line exists before calling remove
-                });
-                markers = [];
-                flights = [];
-                localStorage.removeItem('flights');
-                updateFlightList();
-                modal.classList.remove('show'); // Hide modal with animation
-                setTimeout(() => modal.style.display = 'none', 300); // Ensure modal is hidden after animation
-            };
-        }
-    
-        document.getElementById('add-flight-button').addEventListener('click', addFlight);
-        document.getElementById('reset-flights-button').addEventListener('click', resetFlights);
-    
-        loadFlights(); // Load flights when the page loads
+
+        document.getElementById('add-flight-button').addEventListener('click', () => {
+            const departureInput = document.getElementById('departure-input').value;
+            const arrivalInput = document.getElementById('arrival-input').value;
+            const flightNumberInput = document.getElementById('flight-number-input').value;
+
+            if (departureInput && arrivalInput) {
+                fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(departureInput)}&key=${apiKey}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const departure = {
+                            place: departureInput,
+                            lat: data.results[0].geometry.lat,
+                            lng: data.results[0].geometry.lng
+                        };
+                        return fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(arrivalInput)}&key=${apiKey}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                const arrival = {
+                                    place: arrivalInput,
+                                    lat: data.results[0].geometry.lat,
+                                    lng: data.results[0].geometry.lng
+                                };
+                                addFlight(departure, arrival, flightNumberInput);
+                            });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching location data:', error);
+                    });
+
+                document.getElementById('departure-input').value = '';
+                document.getElementById('arrival-input').value = '';
+                document.getElementById('flight-number-input').value = '';
+            } else {
+                alert('Please enter both departure and arrival airports.');
+            }
+        });
+
+        document.getElementById('reset-flights-button').addEventListener('click', () => {
+            document.getElementById('reset-modal').classList.add('show');
+        });
+
+        document.getElementById('confirm-reset').addEventListener('click', () => {
+            deleteAllFlights();
+            document.getElementById('reset-modal').classList.remove('show');
+        });
+
+        document.getElementById('cancel-reset').addEventListener('click', () => {
+            document.getElementById('reset-modal').classList.remove('show');
+        });
+
+        document.querySelectorAll('.close').forEach(button => {
+            button.addEventListener('click', () => {
+                button.closest('.modal, .details-panel').classList.remove('show');
+            });
+        });
+
+        loadFlights();
     </script>
-    
 </body>
 </html>
