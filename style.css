@@ -1,0 +1,269 @@
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    line-height: 1.6; /* Improved readability */
+    letter-spacing: 0.5px; /* Slightly spaced out text */
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background-attachment: fixed; /* Parallax effect */
+    color: #444;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin: 40px;
+    color: #222;
+    text-align: center;
+    font-weight: 600;
+}
+
+#map {
+    height: 70vh;
+    width: 90%;
+    max-width: 1000px; /* Adjusted max-width */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden; /* Ensure content doesn't overflow */
+    z-index: 2;
+}
+
+.map-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+    z-index: 2;
+}
+
+#flight-form {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+    padding: 12px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px; /* Constrain width */
+}
+
+.icon {
+    width: 30px; /* Adjust size as needed */
+    height: auto;
+    filter: hue-rotate(180deg) brightness(0) contrast(1.2); /* Adjust color */
+}
+
+#flight-form input, #flight-form button {
+    padding: 10px;
+    font-size: 16px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#flight-form input:focus, #flight-form button:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+#flight-form input {
+    flex: 1;
+    margin-right: 20px;
+}
+
+#flight-form button {
+    background: linear-gradient(135deg, #0056b3, #003d7a);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#flight-form button:hover {
+    background: linear-gradient(135deg, #003d7a, #0056b3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+#flight-list {
+    text-align: center;
+    margin: 20px;
+}
+
+#flights {
+    list-style: none;
+    padding: 0;
+}
+
+#flights li {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px auto;
+    padding: 12px;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 600px;
+    transition: all 0.3s ease;
+}
+
+#flights li:hover {
+    background: #f0f0f0;
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.delete-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #e63946;
+    font-size: 18px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.delete-button:hover {
+    color: #d62839;
+    transform: scale(1.1);
+}
+
+footer {
+    background: #222;
+    color: #fff;
+    padding: 20px 0;
+    font-size: 14px;
+    text-align: center;
+}
+
+.footer-content {
+    margin: 0 auto;
+    font-size: 14px;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
+/* Modal background */
+/* Modal background */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto; /* Centered */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px; /* Maximum width for large screens */
+    position: relative;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Modal Open Animation */
+.modal.show {
+    display: block;
+    opacity: 1;
+}
+
+.modal.show .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Close Button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #007bff;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.close:hover {
+    color: #0056b3;
+    animation: spin 0.6s ease;
+}
+
+/* Modal Heading */
+.modal-content h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+    color: #333;
+}
+
+/* Modal Buttons */
+.modal-content button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.modal-content button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.modal-content button:active {
+    transform: translate(0);
+}
+
+/* X Animation */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Airplane Animation */
+.airplane {
+    position: absolute;
+    width: 50px;
+    height: auto;
+    top: 50%;
+    left: -60px;
+    transform: translateY(-50%);
+    animation: takeoff 3s ease-out forwards;
+}
+
+@keyframes takeoff {
+    0% {
+        left: -60px;
+        transform: translateY(50%) scale(0.5);
+    }
+    100% {
+        left: 100%;
+        transform: translateY(-200%) scale(1);
+    }
+}
+
+    
