@@ -75,7 +75,7 @@
                     const departureMarker = L.marker(departureLatLng).addTo(map);
                     const arrivalMarker = L.marker(arrivalLatLng).addTo(map);
     
-                    const flightLine = L.polyline([departureLatLng, arrivalLatLng], { color: '#007bff', weight: 4 }).addTo(map);
+                    const flightLine = L.polyline([departureLatLng, arrivalLatLng], { color: '#007bff', weight: 3, opacity: .5 }).addTo(map);
     
                     const flightList = document.getElementById('flights');
                     const listItem = document.createElement('li');
@@ -130,7 +130,7 @@
                         const arrivalMarker = L.marker(arrivalLatLng).addTo(map);
                         markers.push({ marker: [departureMarker, arrivalMarker] });
     
-                        const flightLine = L.polyline([departureLatLng, arrivalLatLng], { color: '#007bff', weight: 4 }).addTo(map);
+                        const flightLine = L.polyline([departureLatLng, arrivalLatLng], { color: '#007bff', weight: 3, opacity: .5 }).addTo(map);
                         flights.push({ line: flightLine, departurePlace: departure, arrivalPlace: arrival });
                         flightLine.departurePlace = departure; // Store additional data
                         flightLine.arrivalPlace = arrival; // Store additional data
